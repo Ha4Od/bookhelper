@@ -8,7 +8,7 @@ import {BookModule} from "./book-module/book.module";
 
 @Module({
   imports: [
-      MongooseModule.forRootAsync({}),
+      MongooseModule.forRoot("mongodb://localhost:27017/bookhelper"),
       BookModule,
       UserModule,
       ChapterModule,

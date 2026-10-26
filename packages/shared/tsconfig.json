@@ -1,0 +1,4 @@
+{
+  "compilerOptions": { "strict": true, "noEmit": true, "module": "nodenext", "target": "ES2023", "skipLibCheck": true },
+  "include": ["src"]
+}

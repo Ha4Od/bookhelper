@@ -1,4 +1,4 @@
-export interface BookDTO {
+export interface BookDto {
     _id: string;
     userId: string;
     title: string;

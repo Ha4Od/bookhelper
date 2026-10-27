@@ -5,9 +5,6 @@ import {HydratedDocument} from "mongoose";
 export class Book{
 
     @Prop({required: true, unique: true})
-    _id: string;
-
-    @Prop({required: true, unique: true})
     userId: string;
 
     @Prop({required: true, minlength: 3})

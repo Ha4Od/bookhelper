@@ -1,6 +1,8 @@
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {HydratedDocument} from "mongoose";
+import {BookModule} from "./book.module";
 
+export type BookDocument =HydratedDocument<Book>;
 @Schema({timestamps: true})
 export class Book{
 

@@ -1,12 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import mongoose, { HydratedDocument, Types } from 'mongoose';
+
+export type ChapterDocument = HydratedDocument<Chapter>;
 
 @Schema({ timestamps: true })
 export class Chapter {
   @Prop({ minlength: 3, required: true })
   title: string;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Book' })
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
   @Prop()

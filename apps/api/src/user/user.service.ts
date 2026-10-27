@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserDocument } from './user.schema';
+import {User, UserDocument} from './user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -7,7 +7,7 @@ import argon2 from 'argon2';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(dto: CreateUserDto): Promise<UserDocument> {
     const { name, email, password, nickname } = dto;

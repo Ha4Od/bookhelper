@@ -12,8 +12,10 @@ export class Chapter {
   @Prop()
   text: string;
 
-  @Prop({required: true, unique: true})
+  @Prop({required: true})
   order: string;
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);
+
+ChapterSchema.index({bookId: 1, order: 1 }, {unique: true});

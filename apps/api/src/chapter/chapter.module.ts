@@ -4,6 +4,6 @@ import { ChapterController } from './chapter.controller';
 
 @Module({
   providers: [ChapterService],
-  controllers: [ChapterController]
+  controllers: [ChapterController],
 })
 export class ChapterModule {}

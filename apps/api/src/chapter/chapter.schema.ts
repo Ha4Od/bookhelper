@@ -1,21 +1,21 @@
-import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {HydratedDocument} from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Chapter {
-  @Prop({ minlength: 3, required: true,})
+  @Prop({ minlength: 3, required: true })
   title: string;
 
-  @Prop({ required: true})
-  bookId: string;
+  @Prop({ required: true })
+  bookId: Types.ObjectId;
 
   @Prop()
   text: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   order: string;
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);
 
-ChapterSchema.index({bookId: 1, order: 1 }, {unique: true});
+ChapterSchema.index({ bookId: 1, order: 1 }, { unique: true });

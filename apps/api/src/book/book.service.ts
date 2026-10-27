@@ -6,9 +6,9 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class BookService {
-    constructor(
-      @InjectModel(Book.name) private readonly bookModel: Model<BookDocument>
-    ) {}
+  constructor(
+    @InjectModel(Book.name) private readonly bookModel: Model<BookDocument>,
+  ) {}
 
   async create(dto: CreateBookDto): Promise<BookDocument> {
     return this.bookModel.create(dto);

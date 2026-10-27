@@ -1,13 +1,13 @@
-import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {HydratedDocument} from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class Character {
-  @Prop({required: true, minlength: 3})
+  @Prop({ required: true, minlength: 3 })
   name: string;
 
-  @Prop({required: true})
-  bookId: string;
+  @Prop({ required: true })
+  bookId: Types.ObjectId;
 
   @Prop()
   role: string;

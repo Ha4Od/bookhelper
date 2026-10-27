@@ -12,7 +12,7 @@ export class Chapter {
   @Prop()
   text: string;
 
-  @Prop({ required: true , type: Number})
+  @Prop({ required: true, type: Number })
   order: number;
 }
 

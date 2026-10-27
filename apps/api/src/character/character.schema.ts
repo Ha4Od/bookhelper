@@ -6,7 +6,7 @@ export class Character {
   @Prop({ required: true, minlength: 3 })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
   @Prop()

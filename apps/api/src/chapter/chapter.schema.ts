@@ -6,14 +6,14 @@ export class Chapter {
   @Prop({ minlength: 3, required: true })
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
   @Prop()
   text: string;
 
-  @Prop({ required: true })
-  order: string;
+  @Prop({ required: true , type: Number})
+  order: number;
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);

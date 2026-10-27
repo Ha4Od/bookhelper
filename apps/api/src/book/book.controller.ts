@@ -9,7 +9,7 @@ export class BookController {
 
   @Post()
   async create(
-    @Body(new ValidationPipe({ whitelist: true })) createBookDto: CreateBookDto,
+    @Body() createBookDto: CreateBookDto,
   ): Promise<BookDocument> {
     return this.bookService.create(createBookDto);
   }

@@ -4,6 +4,8 @@ import { ChapterModule } from './chapter/chapter.module';
 import { CharacterModule } from './character/character.module';
 import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
+import { APP_FILTER } from '@nestjs/core';
+import { MongoServerExceptionFilter } from './exception-filters/mongo.serverException.filter';
 
 @Module({
   imports: [
@@ -14,6 +16,6 @@ import { BookModule } from './book/book.module';
     CharacterModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [{provide: APP_FILTER, useClass: MongoServerExceptionFilter}],
 })
 export class AppModule {}

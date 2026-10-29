@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { mongo } from 'mongoose';
 import {Request, Response} from 'express';
@@ -13,18 +14,26 @@ export class MongoServerExceptionFilter implements ExceptionFilter{
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    let status: number;
-    if(exception.code === 11000){
-      status = 409;
-    }else status = 500;
+    const status: number = (exception.code === 11000) ? HttpStatus.CONFLICT : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    response
-      .status(Number(status))
-      .json({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+    if(status === HttpStatus.CONFLICT){
+      response
+        .status(status)
+        .json({
+          statusCode: status,
+          timestamp: new Date().toISOString(),
+          message: `${Object.keys(exception.keyValue)[0]} already exists`,
+          path: request.url,
+        });
+    }else{
+      response
+        .status(status)
+        .json({
+          statusCode: status,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+        });
+    }
 
   }
 }

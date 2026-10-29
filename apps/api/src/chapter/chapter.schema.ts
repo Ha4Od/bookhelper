@@ -11,10 +11,10 @@ export class Chapter {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
-  @Prop()
+  @Prop({optional: true})
   text: string;
 
-  @Prop({ required: true, type: Number })
+  @Prop({ required: true, type: Number, optional: true })
   order: number;
 }
 

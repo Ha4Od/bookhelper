@@ -14,6 +14,5 @@ export class BookService {
     return this.bookModel.create(dto);
   }
 
-  // async findById(id: string): Promise<BookDocument> {
-  // }
+
 }

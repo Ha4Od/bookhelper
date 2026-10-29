@@ -16,6 +16,10 @@ export class User {
 
   @Prop({ required: true, unique: true })
   nickname: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

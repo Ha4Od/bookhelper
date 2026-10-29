@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
 
-export type CharacterDocument =  HydratedDocument<Character>;
-
+export type CharacterDocument = HydratedDocument<Character>;
 
 @Schema({ timestamps: true })
 export class Character {
@@ -12,10 +11,10 @@ export class Character {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
-  @Prop()
+  @Prop({required: false })
   role: string;
 
-  @Prop()
+  @Prop({required: false })
   description: string;
 }
 

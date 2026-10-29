@@ -10,7 +10,7 @@ export class CreateCharacterDto {
 
     @IsMongoId()
     @IsNotEmpty()
-    bookId:Types.ObjectId;
+    bookId: string;
 
     @IsOptional()
     @IsString()

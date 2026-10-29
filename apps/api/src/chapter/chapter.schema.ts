@@ -14,7 +14,7 @@ export class Chapter {
   @Prop({optional: true})
   text: string;
 
-  @Prop({ required: true, type: Number, optional: true })
+  @Prop({ required: true, type: Number})
   order: number;
 }
 

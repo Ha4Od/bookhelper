@@ -1,5 +1,12 @@
 import {Types} from "mongoose";
-import {IsMongoId, IsNotEmpty, IsOptional, IsString, MinLength} from "class-validator";
+import {
+  IsInt,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateChapterDto {
 
@@ -9,11 +16,13 @@ export class CreateChapterDto {
 
     @IsMongoId()
     @IsNotEmpty()
-    bookId: Types.ObjectId;
+    bookId: string;
 
     @IsOptional()
+    @IsString()
     text: string;
 
-    @IsOptional()
+    @IsNotEmpty()
+    @IsInt()
     order: number;
 }

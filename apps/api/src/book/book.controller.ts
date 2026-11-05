@@ -1,7 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BookDocument } from './book.schema';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { BookDto } from '@bookhelper/shared';
 
 @Controller('book')
 export class BookController {
@@ -10,5 +12,12 @@ export class BookController {
   @Post()
   async create(@Body() createBookDto: CreateBookDto): Promise<BookDocument> {
     return this.bookService.create(createBookDto);
+  }
+
+  @Get(':id')
+  async findById(
+    @Param('id', ParseObjectIdPipe) id: string,
+  ): Promise<BookDto | null> {
+    return this.bookService.findById(id);
   }
 }

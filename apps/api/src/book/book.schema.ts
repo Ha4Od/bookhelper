@@ -9,6 +9,10 @@ export class Book {
 
   @Prop({ required: true, minlength: 3 })
   title: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

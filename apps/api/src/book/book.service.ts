@@ -13,6 +13,4 @@ export class BookService {
   async create(dto: CreateBookDto): Promise<BookDocument> {
     return this.bookModel.create(dto);
   }
-
-
 }

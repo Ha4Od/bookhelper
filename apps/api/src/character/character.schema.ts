@@ -11,10 +11,10 @@ export class Character {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
-  @Prop({required: false })
+  @Prop({ required: false })
   role: string;
 
-  @Prop({required: false })
+  @Prop({ required: false })
   description: string;
 }
 

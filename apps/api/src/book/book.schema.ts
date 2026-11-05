@@ -4,7 +4,7 @@ import mongoose, { HydratedDocument, Types } from 'mongoose';
 export type BookDocument = HydratedDocument<Book>;
 @Schema({ timestamps: true })
 export class Book {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true})
   userId: Types.ObjectId;
 
   @Prop({ required: true, minlength: 3 })

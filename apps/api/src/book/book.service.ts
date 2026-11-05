@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
 import { Book, BookDocument } from './book.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,14 +12,23 @@ export class BookService {
     @InjectModel(Book.name) private readonly bookModel: Model<BookDocument>,
   ) {}
 
-  async create(dto: CreateBookDto): Promise<BookDocument> {
-    return this.bookModel.create(dto);
+  async create(dto: CreateBookDto): Promise<BookDto> {
+    return toBookDto(await this.bookModel.create(dto));
   }
 
-  async findById(id: string): Promise<BookDto | null> {
+  async findById(id: Types.ObjectId): Promise<BookDto | null> {
     const book = await this.bookModel
       .findById(id)
       .orFail(new NotFoundException('Book not found'));
     return toBookDto(book);
+  }
+
+  async findAllByUserId(userId: Types.ObjectId): Promise<BookDto[]> {
+    const books: BookDocument[] = await this.bookModel.find({userId: userId});
+    let tempArray: BookDto[] = [];
+    books.forEach(book => {
+      tempArray.push(toBookDto(book));
+    })
+    return tempArray;
   }
 }

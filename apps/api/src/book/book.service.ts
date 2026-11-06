@@ -5,6 +5,7 @@ import { Book, BookDocument } from './book.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { BookDto } from '@bookhelper/shared';
 import { toBookDto } from './book.mapper';
+import {UpdateBookTitleDto} from "./dto/update-booktitle.dto";
 
 @Injectable()
 export class BookService {
@@ -30,5 +31,9 @@ export class BookService {
       tempArray.push(toBookDto(book));
     })
     return tempArray;
+  }
+  
+  async update(id: Types.ObjectId, dto: UpdateBookTitleDto): Promise<BookDto> {
+      return toBookDto(await this.bookModel.findByIdAndUpdate(id, dto, { returnDocument: 'after', runValidators: true }).orFail(new NotFoundException('Book not found')));
   }
 }

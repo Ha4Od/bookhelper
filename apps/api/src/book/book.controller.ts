@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Query} from '@nestjs/common';
+import {Body, Controller, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { BookDto } from '@bookhelper/shared';
 import { Types } from 'mongoose';
+import {UpdateBookTitleDto} from "./dto/update-booktitle.dto";
 
 @Controller('book')
 export class BookController {
@@ -25,4 +26,10 @@ export class BookController {
   async findAllByUserId(@Query("userId", ParseObjectIdPipe) userId: Types.ObjectId): Promise<BookDto[]> {
     return this.bookService.findAllByUserId(userId)
   }
+
+  @Patch(":id")
+  async update(@Param('id', ParseObjectIdPipe) id: Types.ObjectId, @Body() dto: UpdateBookTitleDto): Promise<BookDto> {
+    return this.bookService.update(id, dto);
+  }
+
 }

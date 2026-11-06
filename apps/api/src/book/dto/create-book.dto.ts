@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import {IsMongoId, IsNotEmpty, IsString, MinLength} from 'class-validator';
 
 export class CreateBookDto {
   @IsMongoId()
@@ -6,5 +6,6 @@ export class CreateBookDto {
   userId: string;
 
   @IsString()
+  @MinLength(3)
   title: string;
 }

@@ -29,9 +29,6 @@ export class BookService {
 
   async findAllByUserId(userId: Types.ObjectId): Promise<BookDto[]> {
     const books: BookDocument[] = await this.bookModel.find({ userId: userId });
-    // books.forEach(book => {
-    //   tempArray.push(toBookDto(book));
-    // })
     return books.map((book) => toBookDto(book));
   }
 

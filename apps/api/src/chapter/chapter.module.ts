@@ -13,7 +13,6 @@ import { Chapter, ChapterSchema } from './chapter.schema';
       },
     ]),
   ],
-
   providers: [ChapterService],
   controllers: [ChapterController],
 })

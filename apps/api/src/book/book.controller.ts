@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query} from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
@@ -30,6 +30,12 @@ export class BookController {
   @Patch(":id")
   async update(@Param('id', ParseObjectIdPipe) id: Types.ObjectId, @Body() dto: UpdateBookTitleDto): Promise<BookDto> {
     return this.bookService.update(id, dto);
+  }
+
+  @Delete(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param('id', ParseObjectIdPipe) id: Types.ObjectId): Promise<void> {
+    await this.bookService.delete(id);
   }
 
 }

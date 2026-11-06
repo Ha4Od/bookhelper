@@ -6,11 +6,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { BookDto } from '@bookhelper/shared';
 import { toBookDto } from './book.mapper';
 import {UpdateBookTitleDto} from "./dto/update-booktitle.dto";
+import {EventEmitter2} from "@nestjs/event-emitter";
 
 @Injectable()
 export class BookService {
   constructor(
     @InjectModel(Book.name) private readonly bookModel: Model<BookDocument>,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   async create(dto: CreateBookDto): Promise<BookDto> {
@@ -35,5 +37,10 @@ export class BookService {
   
   async update(id: Types.ObjectId, dto: UpdateBookTitleDto): Promise<BookDto> {
       return toBookDto(await this.bookModel.findByIdAndUpdate(id, dto, { returnDocument: 'after', runValidators: true }).orFail(new NotFoundException('Book not found')));
+  }
+
+  async delete(id: Types.ObjectId): Promise<void> {
+   await this.bookModel.findByIdAndDelete(id).orFail(new NotFoundException('Book not found'));
+   this.eventEmitter.emit("book.deleted", id);
   }
 }

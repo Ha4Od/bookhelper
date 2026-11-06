@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {Model, Types} from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Chapter, ChapterDocument } from './chapter.schema';
 import { CreateChapterDto } from './dto/create-chapter.dto';
-import {OnEvent} from "@nestjs/event-emitter";
+import { OnEvent } from '@nestjs/event-emitter';
+import { BOOK_DELETED } from '../book/book.events';
 
 @Injectable()
 export class ChapterService {
@@ -16,7 +17,7 @@ export class ChapterService {
     return this.chapterModel.create(dto);
   }
 
-  @OnEvent('book.deleted', { suppressErrors: false })
+  @OnEvent(BOOK_DELETED, { suppressErrors: false })
   async onBookDeleted(bookId: Types.ObjectId): Promise<void> {
     await this.chapterModel.deleteMany({ bookId });
   }

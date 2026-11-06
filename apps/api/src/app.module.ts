@@ -6,7 +6,7 @@ import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { MongoServerExceptionFilter } from './exception-filters/mongo.serverException.filter';
-import {EventEmitterModule} from "@nestjs/event-emitter";
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import {EventEmitterModule} from "@nestjs/event-emitter";
     UserModule,
     ChapterModule,
     CharacterModule,
-    EventEmitterModule.forRoot({})
+    EventEmitterModule.forRoot({}),
   ],
   controllers: [],
   providers: [

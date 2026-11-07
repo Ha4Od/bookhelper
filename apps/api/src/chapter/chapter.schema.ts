@@ -16,6 +16,10 @@ export class Chapter {
 
   @Prop({ required: true, type: Number })
   order: number;
+
+  createdAt: Date;
+
+  updatedAt: Date;
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);

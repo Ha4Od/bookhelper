@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Chapter, ChapterDocument } from './chapter.schema';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from '../book/book.events';
+import {toChapterDto} from "./chapter.mapper";
+import {ChapterDto} from "@bookhelper/shared";
 
 @Injectable()
 export class ChapterService {
@@ -13,8 +15,17 @@ export class ChapterService {
     private readonly chapterModel: Model<ChapterDocument>,
   ) {}
 
-  async create(dto: CreateChapterDto): Promise<ChapterDocument> {
-    return this.chapterModel.create(dto);
+  async create(dto: CreateChapterDto): Promise<ChapterDto> {
+    return toChapterDto(await this.chapterModel.create(dto));
+  }
+
+  async findByBookId(bookId: Types.ObjectId): Promise<ChapterDto[]> {
+    const chapters = await this.chapterModel.find({bookId: bookId}).sort({order: 1});
+    return chapters.map((chapter) => toChapterDto(chapter));
+  }
+
+  async findById(id: Types.ObjectId): Promise<ChapterDto> {
+    return toChapterDto(await this.chapterModel.findById(id).orFail(new NotFoundException("Not Found")));
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

@@ -7,6 +7,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from '../book/book.events';
 import {toChapterDto} from "./chapter.mapper";
 import {ChapterDto} from "@bookhelper/shared";
+import {UpdateChapterDto} from "./dto/update-chapter.dto";
 
 @Injectable()
 export class ChapterService {
@@ -26,6 +27,19 @@ export class ChapterService {
 
   async findById(id: Types.ObjectId): Promise<ChapterDto> {
     return toChapterDto(await this.chapterModel.findById(id).orFail(new NotFoundException("Not Found")));
+  }
+
+  async update(id: Types.ObjectId, dto: UpdateChapterDto): Promise<ChapterDto> {
+    return toChapterDto(await this.chapterModel.findByIdAndUpdate(id, dto, {
+      returnDocument: 'after',
+      runValidators: true,
+    }).orFail(new NotFoundException('Chapter not found')))
+  }
+
+  async delete(id: Types.ObjectId): Promise<void> {
+    await this.chapterModel
+        .findByIdAndDelete(id)
+        .orFail(new NotFoundException('Book not found'));
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

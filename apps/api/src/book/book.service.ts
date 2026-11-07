@@ -47,6 +47,6 @@ export class BookService {
     await this.bookModel
       .findByIdAndDelete(id)
       .orFail(new NotFoundException('Book not found'));
-    await this.eventEmitter.emit(BOOK_DELETED, id);
+    await this.eventEmitter.emitAsync(BOOK_DELETED, id);
   }
 }

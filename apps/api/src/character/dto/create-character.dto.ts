@@ -19,9 +19,9 @@ export class CreateCharacterDto {
 
   @IsOptional()
   @IsString()
-  role: string;
+  role?: string;
 
   @IsOptional()
   @IsString()
-  description: string;
+  description?: string;
 }

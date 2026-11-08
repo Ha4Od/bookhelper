@@ -11,11 +11,15 @@ export class Character {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: '' })
   role: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: '' })
   description: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
 }
 
 export const CharacterSchema = SchemaFactory.createForClass(Character);

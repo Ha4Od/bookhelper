@@ -24,7 +24,7 @@ export class MongoServerExceptionFilter implements ExceptionFilter {
       response.status(status).json({
         statusCode: status,
         timestamp: new Date().toISOString(),
-        message: `${Object.keys(exception.keyValue).join(", ")} already exists`,
+        message: `${Object.keys(exception.keyValue).join(', ')} already exists`,
         path: request.url,
       });
     } else {

@@ -11,7 +11,7 @@ export class Chapter {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Book' })
   bookId: Types.ObjectId;
 
-  @Prop({default: ''})
+  @Prop({ default: '' })
   text: string;
 
   @Prop({ required: true, type: Number })

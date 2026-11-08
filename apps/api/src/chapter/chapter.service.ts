@@ -22,7 +22,7 @@ export class ChapterService {
 
   async findByBookId(bookId: Types.ObjectId): Promise<ChapterDto[]> {
     const chapters = await this.chapterModel
-      .find({ bookId: bookId })
+      .find({ bookId })
       .sort({ order: 1 });
     return chapters.map((chapter) => toChapterDto(chapter));
   }

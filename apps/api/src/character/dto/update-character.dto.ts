@@ -1,18 +1,18 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsString, MinLength, ValidateIf } from 'class-validator';
 
 export class UpdateCharacterDto {
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsString()
   @MinLength(3, {
     message: 'Character name must be at least 3 characters long',
   })
   name?: string;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsString()
   role?: string;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsString()
   description?: string;
 }

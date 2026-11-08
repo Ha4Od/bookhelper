@@ -30,8 +30,8 @@ export class CharacterService {
 
   async findByBookId(bookId: Types.ObjectId): Promise<CharacterDto[]> {
     const characters = await this.characterModel
-      .find({ bookId: bookId })
-      .sort({ order: 1 });
+      .find({ bookId })
+      .sort({ name: 1 });
     return characters.map((character) => toCharacterDto(character));
   }
 

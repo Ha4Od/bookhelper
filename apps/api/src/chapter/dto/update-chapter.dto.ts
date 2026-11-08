@@ -1,16 +1,16 @@
-import { IsInt, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { IsInt, IsString, Min, MinLength, ValidateIf } from 'class-validator';
 
 export class UpdateChapterDto {
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsString()
   @MinLength(3)
   title?: string;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsString()
   text?: string;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsInt()
   @Min(1)
   order?: number;

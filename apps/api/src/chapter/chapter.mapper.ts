@@ -7,7 +7,7 @@ export function toChapterDto(chapter: ChapterDocument): ChapterDto {
     bookId: chapter.bookId.toString(),
     title: chapter.title,
     text: chapter.text,
-    order: Number(chapter.order),
+    order: chapter.order,
     createdAt: chapter.createdAt.toISOString(),
     updatedAt: chapter.updatedAt.toISOString(),
   };

@@ -3,14 +3,12 @@ import {AuthService} from "./auth.service";
 import {UserLoginDto} from "./dto/user-login.dto";
 import {HttpAdapterHost} from "@nestjs/core";
 import {UserDto} from "@bookhelper/shared";
-import {toUserDto} from "../user/user.mapper";
 import {ConfigService} from "@nestjs/config";
 import {CreateUserDto} from "../user/dto/create-user.dto";
+import {ACCESS_TOKEN} from "./auth.constants";
 
 
-const ACCESS_TOKEN = "access-token";
 
-@Injectable()
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService,

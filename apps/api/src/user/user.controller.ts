@@ -7,8 +7,4 @@ import { UserDto } from '@bookhelper/shared';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async create(@Body() dto: CreateUserDto): Promise<UserDto> {
-    return await this.userService.create(dto);
-  }
 }

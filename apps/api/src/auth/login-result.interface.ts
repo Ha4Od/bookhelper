@@ -1,6 +1,6 @@
-import {UserDto} from "@bookhelper/shared";
+import { UserDto } from '@bookhelper/shared';
 
 export interface UserLoginResponse {
-    accessToken: string;
-    user: UserDto;
+  accessToken: string;
+  user: UserDto;
 }

@@ -9,7 +9,7 @@ import { MongoServerExceptionFilter } from './exception-filters/mongo.serverExce
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getMongoConfig } from './config/mongo.config';
-import {AuthModule} from "./auth/auth.module";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [

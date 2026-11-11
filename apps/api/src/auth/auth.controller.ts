@@ -13,6 +13,7 @@ import { UserDto } from '@bookhelper/shared';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ACCESS_TOKEN } from './auth.constants';
+import {Public} from "./ public.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,8 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -43,11 +46,14 @@ export class AuthController {
     return loginResponse.user;
   }
 
+
+  @Public()
   @Post('register')
   async register(@Body() dto: CreateUserDto): Promise<UserDto> {
     return this.authService.register(dto);
   }
 
+  @Public()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   logOut(@Res({ passthrough: true }) res: unknown) {

@@ -7,6 +7,7 @@ import argon2 from "argon2";
 import {JwtService} from "@nestjs/jwt";
 import {UserLoginResponse} from "./login-result.interface";
 import { toUserDto } from "../user/user.mapper"
+import {JwtPayload} from "./jwt-payload.interface";
 
 const DUMMY_HASH = "$argon2id$v=19$m=65536,p=4,t=3$tRz3oFIBDQtRz3T4lg3lOw$Z9OsoUj/xyU5/N0DD+pjThINcuFTC/qpwC1RoXkQpj8"
 
@@ -23,7 +24,8 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const accessToken = await this.jwtService.signAsync({sub: user.id});
+        const payload: JwtPayload = { sub: user.id };
+        const accessToken = await this.jwtService.signAsync(payload);
 
         return {accessToken, user: toUserDto(user)}
     }

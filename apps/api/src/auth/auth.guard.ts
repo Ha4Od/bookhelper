@@ -10,12 +10,12 @@ import type { Request } from 'express';
 import type { AuthenticatedRequest } from './auth-request.interface';
 import { JwtPayload } from './jwt-payload.interface';
 import { Reflector} from "@nestjs/core";
-import {IS_PUBLIC_KEY} from "./ public.decorator";
+import {IS_PUBLIC_KEY} from "./public.decorator";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService,
-              private reflector: Reflector) {}
+              private readonly reflector: Reflector) {}
 
   private extractToken(request: Request): string | undefined {
     return request.cookies?.[ACCESS_TOKEN];

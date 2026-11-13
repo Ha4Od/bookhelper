@@ -26,15 +26,15 @@ export class BookController {
     @Body() createBookDto: CreateBookDto,
     @CurrentUser() userId: string,
   ): Promise<BookDto> {
-    const title = createBookDto.title;
-    return this.bookService.create({ title }, userId);
+    return this.bookService.create(createBookDto, userId);
   }
 
   @Get(':id')
   async findById(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+    @CurrentUser() userId: string,
   ): Promise<BookDto | null> {
-    return this.bookService.findById(id);
+    return this.bookService.findById(id, userId);
   }
 
   @Get()

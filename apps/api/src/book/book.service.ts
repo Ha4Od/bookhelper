@@ -29,10 +29,13 @@ export class BookService {
     );
   }
 
-  async findById(id: Types.ObjectId): Promise<BookDto> {
+  async findById(id: Types.ObjectId, userId:string): Promise<BookDto> {
     const book = await this.bookModel
-      .findById(id)
-      .orFail(new NotFoundException('Book not found'));
+      .findOne({
+        _id: id,
+        userId,
+      })
+        .orFail(new NotFoundException('Book not found'));
     return toBookDto(book);
   }
 
@@ -41,35 +44,27 @@ export class BookService {
     return books.map((book) => toBookDto(book));
   }
 
-  private checkUserAttachment(book: BookDto, userId: string): boolean {
-    return book.userId === userId;
-  }
 
   async update(
     id: Types.ObjectId,
     dto: UpdateBookTitleDto,
     userId: string,
   ): Promise<BookDto> {
-    const book = await this.findById(id);
-    if (this.checkUserAttachment(book, userId)) {
+
       return toBookDto(
         await this.bookModel
-          .findByIdAndUpdate(id, dto, {
+          .findOneAndUpdate({_id: id, userId}, dto, {
             returnDocument: 'after',
             runValidators: true,
           })
           .orFail(new NotFoundException('Book not found')),
       );
-    } else throw new UnauthorizedException('Permission denied!');
   }
 
   async delete(id: Types.ObjectId, userId: string): Promise<void> {
-    const book = await this.findById(id);
-    if (this.checkUserAttachment(book, userId)) {
       await this.bookModel
-        .findByIdAndDelete(id)
+        .findOneAndDelete({_id: id, userId})
         .orFail(new NotFoundException('Book not found'));
       await this.eventEmitter.emitAsync(BOOK_DELETED, id);
-    } else throw new UnauthorizedException('Permission denied!');
   }
 }

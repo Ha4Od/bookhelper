@@ -13,7 +13,7 @@ import { UserDto } from '@bookhelper/shared';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ACCESS_TOKEN } from './auth.constants';
-import {Public} from "./public.decorator";
+import { Public } from './public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +22,6 @@ export class AuthController {
     private readonly adapterHost: HttpAdapterHost,
     private readonly configService: ConfigService,
   ) {}
-
 
   @Public()
   @Post('login')
@@ -45,7 +44,6 @@ export class AuthController {
     );
     return loginResponse.user;
   }
-
 
   @Public()
   @Post('register')

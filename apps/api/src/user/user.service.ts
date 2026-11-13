@@ -1,6 +1,6 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User, UserDocument } from './user.schema';
-import {Model, Types} from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import argon2 from 'argon2';
@@ -24,6 +24,10 @@ export class UserService {
   }
 
   async findById(id: string): Promise<UserDto> {
-    return toUserDto(await this.userModel.findById(id).orFail(new NotFoundException("Not Found")));
+    return toUserDto(
+      await this.userModel
+        .findById(id)
+        .orFail(new NotFoundException('Not Found')),
+    );
   }
 }

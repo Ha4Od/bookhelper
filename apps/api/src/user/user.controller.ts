@@ -1,16 +1,14 @@
-import {Controller, Get, Req} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { UserService } from './user.service';
-import type {AuthenticatedRequest} from "../auth/auth-request.interface"
-import {UserDto} from "@bookhelper/shared";
-
+import { UserDto } from '@bookhelper/shared';
+import { CurrentUser } from './user.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-
   @Get('me')
-  async me(@Req()request : AuthenticatedRequest ): Promise<UserDto> {
-    return this.userService.findById(request.user.userId);
+  async me(@CurrentUser() userId: string): Promise<UserDto> {
+    return this.userService.findById(userId);
   }
 }

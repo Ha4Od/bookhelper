@@ -9,13 +9,15 @@ import { ACCESS_TOKEN } from './auth.constants';
 import type { Request } from 'express';
 import type { AuthenticatedRequest } from './auth-request.interface';
 import { JwtPayload } from './jwt-payload.interface';
-import { Reflector} from "@nestjs/core";
-import {IS_PUBLIC_KEY} from "./public.decorator";
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from './public.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService,
-              private readonly reflector: Reflector) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
+  ) {}
 
   private extractToken(request: Request): string | undefined {
     return request.cookies?.[ACCESS_TOKEN];
@@ -23,10 +25,10 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-        context.getHandler(),
-        context.getClass(),
-    ])
-    if(isPublic){
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
       return true;
     }
 

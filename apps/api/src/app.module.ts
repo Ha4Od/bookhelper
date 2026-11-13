@@ -4,13 +4,12 @@ import { ChapterModule } from './chapter/chapter.module';
 import { CharacterModule } from './character/character.module';
 import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
-import {APP_FILTER, APP_GUARD, APP_PIPE} from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { MongoServerExceptionFilter } from './exception-filters/mongo.serverException.filter';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getMongoConfig } from './config/mongo.config';
 import { AuthModule } from './auth/auth.module';
-import {AuthGuard} from "./auth/auth.guard";
 
 @Module({
   imports: [
@@ -32,7 +31,7 @@ import {AuthGuard} from "./auth/auth.guard";
   controllers: [],
   providers: [
     { provide: APP_FILTER, useClass: MongoServerExceptionFilter },
-    { provide: APP_PIPE, useValue: new ValidationPipe({ whitelist: true })},
+    { provide: APP_PIPE, useValue: new ValidationPipe({ whitelist: true }) },
   ],
 })
 export class AppModule {}

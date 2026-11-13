@@ -1,0 +1,5 @@
+lint = pnpm --filter @bookhelper/api lint
+prettier = pnpm --filter @bookhelper/api format
+build = npm run build
+run:dev = npm run start:dev
+run = npm run start

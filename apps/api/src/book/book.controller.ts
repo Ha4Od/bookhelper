@@ -13,9 +13,9 @@ import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { BookDto } from '@bookhelper/shared';
-import { Types } from 'mongoose';
 import { UpdateBookTitleDto } from './dto/update-booktitle.dto';
 import { CurrentUser } from '../auth/current-user.decorator';
+import type {MongoId} from "../common/mongo-id-type";
 
 @Controller('book')
 export class BookController {
@@ -24,29 +24,29 @@ export class BookController {
   @Post()
   async create(
     @Body() createBookDto: CreateBookDto,
-    @CurrentUser() userId: string,
+    @CurrentUser() userId: MongoId,
   ): Promise<BookDto> {
     return this.bookService.create(createBookDto, userId);
   }
 
   @Get(':id')
   async findById(
-    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @CurrentUser() userId: string,
-  ): Promise<BookDto | null> {
+    @Param('id', ParseObjectIdPipe) id: MongoId,
+    @CurrentUser() userId: MongoId,
+  ): Promise<BookDto> {
     return this.bookService.findById(id, userId);
   }
 
   @Get()
-  async findAllByUserId(@CurrentUser() userId: string): Promise<BookDto[]> {
+  async findAllByUserId(@CurrentUser() userId: MongoId): Promise<BookDto[]> {
     return this.bookService.findAllByUserId(userId);
   }
 
   @Patch(':id')
   async update(
-    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+    @Param('id', ParseObjectIdPipe) id: MongoId,
     @Body() dto: UpdateBookTitleDto,
-    @CurrentUser() userId: string,
+    @CurrentUser() userId: MongoId,
   ): Promise<BookDto> {
     return this.bookService.update(id, dto, userId);
   }
@@ -54,8 +54,8 @@ export class BookController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
-    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @CurrentUser() userId: string,
+    @Param('id', ParseObjectIdPipe) id: MongoId,
+    @CurrentUser() userId: MongoId,
   ): Promise<void> {
     await this.bookService.delete(id, userId);
   }

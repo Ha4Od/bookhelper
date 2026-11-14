@@ -12,6 +12,7 @@ import { toBookDto } from './book.mapper';
 import { UpdateBookTitleDto } from './dto/update-booktitle.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from './book.events';
+import type {MongoId} from "../common/mongo-id-type";
 
 @Injectable()
 export class BookService {
@@ -20,7 +21,7 @@ export class BookService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async create(dto: CreateBookDto, userId: string): Promise<BookDto> {
+  async create(dto: CreateBookDto, userId: MongoId): Promise<BookDto> {
     return toBookDto(
       await this.bookModel.create({
         userId: userId,
@@ -29,7 +30,7 @@ export class BookService {
     );
   }
 
-  async findById(id: Types.ObjectId, userId:string): Promise<BookDto> {
+  async findById(id: MongoId, userId:MongoId): Promise<BookDto> {
     const book = await this.bookModel
       .findOne({
         _id: id,
@@ -39,16 +40,16 @@ export class BookService {
     return toBookDto(book);
   }
 
-  async findAllByUserId(userId: string): Promise<BookDto[]> {
+  async findAllByUserId(userId: MongoId): Promise<BookDto[]> {
     const books: BookDocument[] = await this.bookModel.find({ userId });
     return books.map((book) => toBookDto(book));
   }
 
 
   async update(
-    id: Types.ObjectId,
+    id: MongoId,
     dto: UpdateBookTitleDto,
-    userId: string,
+    userId: MongoId,
   ): Promise<BookDto> {
 
       return toBookDto(
@@ -61,7 +62,7 @@ export class BookService {
       );
   }
 
-  async delete(id: Types.ObjectId, userId: string): Promise<void> {
+  async delete(id: MongoId, userId: MongoId): Promise<void> {
       await this.bookModel
         .findOneAndDelete({_id: id, userId})
         .orFail(new NotFoundException('Book not found'));

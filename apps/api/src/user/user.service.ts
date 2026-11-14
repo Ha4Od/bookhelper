@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import argon2 from 'argon2';
 import { UserDto } from '@bookhelper/shared';
 import { toUserDto } from './user.mapper';
+import type {MongoId} from "../common/mongo-id-type";
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
     return this.userModel.findOne({ email });
   }
 
-  async findById(id: string): Promise<UserDto> {
+  async findById(id: MongoId): Promise<UserDto> {
     return toUserDto(
       await this.userModel
         .findById(id)

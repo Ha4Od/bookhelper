@@ -8,8 +8,8 @@ import { BOOK_DELETED } from '../book/book.events';
 import { toChapterDto } from './chapter.mapper';
 import { ChapterDto } from '@bookhelper/shared';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
-import {BookService} from "../book/book.service";
-import type {MongoId} from "../common/mongo-id-type";
+import { BookService } from '../book/book.service';
+import type { MongoId } from '../common/mongo-id-type';
 
 @Injectable()
 export class ChapterService {
@@ -18,7 +18,6 @@ export class ChapterService {
     private readonly chapterModel: Model<ChapterDocument>,
     private readonly bookService: BookService,
   ) {}
-
 
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {
     await this.bookService.findById(dto.bookId, userId);
@@ -34,17 +33,29 @@ export class ChapterService {
   }
 
   async findById(id: MongoId, userId: MongoId): Promise<ChapterDto> {
-    return toChapterDto(
-      await this.chapterModel
-        .findOne({_id: id, userId: userId})
-        .orFail(new NotFoundException('Chapter Not Found')),
-    );
+    return toChapterDto(await this.getChapterDocument(id, userId));
   }
 
-  async update(id: MongoId, dto: UpdateChapterDto, userId: MongoId): Promise<ChapterDto> {
+  private async getChapterDocument(
+    id: MongoId,
+    userId: MongoId,
+  ): Promise<ChapterDocument> {
+    const chapter = await this.chapterModel
+      .findById(id)
+      .orFail(new NotFoundException('Chapter Not Found'));
+    await this.bookService.findById(chapter.bookId, userId);
+    return chapter;
+  }
+
+  async update(
+    id: MongoId,
+    dto: UpdateChapterDto,
+    userId: MongoId,
+  ): Promise<ChapterDto> {
+    await this.getChapterDocument(id, userId);
     return toChapterDto(
       await this.chapterModel
-        .findOneAndUpdate({_id: id, userId: userId}, dto, {
+        .findByIdAndUpdate(id, dto, {
           returnDocument: 'after',
           runValidators: true,
         })
@@ -53,8 +64,9 @@ export class ChapterService {
   }
 
   async delete(id: MongoId, userId: MongoId): Promise<void> {
+    await this.getChapterDocument(id, userId);
     await this.chapterModel
-      .findOneAndDelete({_id: id, userId: userId})
+      .findByIdAndDelete(id)
       .orFail(new NotFoundException('Chapter not found'));
   }
 

@@ -6,7 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import argon2 from 'argon2';
 import { UserDto } from '@bookhelper/shared';
 import { toUserDto } from './user.mapper';
-import type {MongoId} from "../common/mongo-id-type";
+import type { MongoId } from '../common/mongo-id-type';
 
 @Injectable()
 export class UserService {

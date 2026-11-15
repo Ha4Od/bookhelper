@@ -1,9 +1,5 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Model } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
 import { Book, BookDocument } from './book.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,7 +8,7 @@ import { toBookDto } from './book.mapper';
 import { UpdateBookTitleDto } from './dto/update-booktitle.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from './book.events';
-import type {MongoId} from "../common/mongo-id-type";
+import type { MongoId } from '../common/mongo-id-type';
 
 @Injectable()
 export class BookService {
@@ -30,13 +26,13 @@ export class BookService {
     );
   }
 
-  async findById(id: MongoId, userId:MongoId): Promise<BookDto> {
+  async findById(id: MongoId, userId: MongoId): Promise<BookDto> {
     const book = await this.bookModel
       .findOne({
         _id: id,
         userId,
       })
-        .orFail(new NotFoundException('Book not found'));
+      .orFail(new NotFoundException('Book not found'));
     return toBookDto(book);
   }
 
@@ -45,27 +41,25 @@ export class BookService {
     return books.map((book) => toBookDto(book));
   }
 
-
   async update(
     id: MongoId,
     dto: UpdateBookTitleDto,
     userId: MongoId,
   ): Promise<BookDto> {
-
-      return toBookDto(
-        await this.bookModel
-          .findOneAndUpdate({_id: id, userId}, dto, {
-            returnDocument: 'after',
-            runValidators: true,
-          })
-          .orFail(new NotFoundException('Book not found')),
-      );
+    return toBookDto(
+      await this.bookModel
+        .findOneAndUpdate({ _id: id, userId }, dto, {
+          returnDocument: 'after',
+          runValidators: true,
+        })
+        .orFail(new NotFoundException('Book not found')),
+    );
   }
 
   async delete(id: MongoId, userId: MongoId): Promise<void> {
-      await this.bookModel
-        .findOneAndDelete({_id: id, userId})
-        .orFail(new NotFoundException('Book not found'));
-      await this.eventEmitter.emitAsync(BOOK_DELETED, id);
+    await this.bookModel
+      .findOneAndDelete({ _id: id, userId })
+      .orFail(new NotFoundException('Book not found'));
+    await this.eventEmitter.emitAsync(BOOK_DELETED, id);
   }
 }

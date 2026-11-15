@@ -8,27 +8,45 @@ import { BOOK_DELETED } from '../book/book.events';
 import { CharacterDto } from '@bookhelper/shared';
 import { toCharacterDto } from './character.mapper';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { MongoId } from '../common/mongo-id-type';
+import { BookService } from '../book/book.service';
 
 @Injectable()
 export class CharacterService {
   constructor(
     @InjectModel(Character.name)
     private readonly characterModel: Model<CharacterDocument>,
+    private readonly bookService: BookService,
   ) {}
 
-  async create(dto: CreateCharacterDto): Promise<CharacterDto> {
+  private async getCharacterDocument(
+    id: MongoId,
+    userId: MongoId,
+  ): Promise<CharacterDocument> {
+    const character = await this.characterModel
+      .findById(id)
+      .orFail(new NotFoundException('Chapter Not Found'));
+    await this.bookService.findById(character.bookId, userId);
+    return character;
+  }
+
+  async create(
+    dto: CreateCharacterDto,
+    userId: MongoId,
+  ): Promise<CharacterDto> {
+    await this.bookService.findById(dto.bookId, userId);
     return toCharacterDto(await this.characterModel.create(dto));
   }
 
-  async findById(id: Types.ObjectId): Promise<CharacterDto> {
-    return toCharacterDto(
-      await this.characterModel
-        .findById(id)
-        .orFail(new NotFoundException('Character Not Found')),
-    );
+  async findById(id: Types.ObjectId, userId: MongoId): Promise<CharacterDto> {
+    return toCharacterDto(await this.getCharacterDocument(id, userId));
   }
 
-  async findByBookId(bookId: Types.ObjectId): Promise<CharacterDto[]> {
+  async findByBookId(
+    bookId: Types.ObjectId,
+    userId: MongoId,
+  ): Promise<CharacterDto[]> {
+    await this.bookService.findById(bookId, userId);
     const characters = await this.characterModel
       .find({ bookId })
       .sort({ name: 1 });
@@ -38,7 +56,9 @@ export class CharacterService {
   async update(
     id: Types.ObjectId,
     dto: UpdateCharacterDto,
+    userId: MongoId,
   ): Promise<CharacterDto> {
+    await this.getCharacterDocument(id, userId);
     return toCharacterDto(
       await this.characterModel
         .findByIdAndUpdate(id, dto, {
@@ -49,7 +69,8 @@ export class CharacterService {
     );
   }
 
-  async delete(id: Types.ObjectId): Promise<void> {
+  async delete(id: Types.ObjectId, userId: MongoId): Promise<void> {
+    await this.getCharacterDocument(id, userId);
     await this.characterModel
       .findByIdAndDelete(id)
       .orFail(new NotFoundException('Character not found'));

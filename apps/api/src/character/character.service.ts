@@ -25,7 +25,7 @@ export class CharacterService {
   ): Promise<CharacterDocument> {
     const character = await this.characterModel
       .findById(id)
-      .orFail(new NotFoundException('Chapter Not Found'));
+      .orFail(new NotFoundException('Not Found'));
     await this.bookService.findById(character.bookId, userId);
     return character;
   }
@@ -38,12 +38,12 @@ export class CharacterService {
     return toCharacterDto(await this.characterModel.create(dto));
   }
 
-  async findById(id: Types.ObjectId, userId: MongoId): Promise<CharacterDto> {
+  async findById(id: MongoId, userId: MongoId): Promise<CharacterDto> {
     return toCharacterDto(await this.getCharacterDocument(id, userId));
   }
 
   async findByBookId(
-    bookId: Types.ObjectId,
+    bookId: MongoId,
     userId: MongoId,
   ): Promise<CharacterDto[]> {
     await this.bookService.findById(bookId, userId);
@@ -54,7 +54,7 @@ export class CharacterService {
   }
 
   async update(
-    id: Types.ObjectId,
+    id: MongoId,
     dto: UpdateCharacterDto,
     userId: MongoId,
   ): Promise<CharacterDto> {
@@ -65,15 +65,15 @@ export class CharacterService {
           returnDocument: 'after',
           runValidators: true,
         })
-        .orFail(new NotFoundException('Character not found')),
+        .orFail(new NotFoundException('Not found')),
     );
   }
 
-  async delete(id: Types.ObjectId, userId: MongoId): Promise<void> {
+  async delete(id: MongoId, userId: MongoId): Promise<void> {
     await this.getCharacterDocument(id, userId);
     await this.characterModel
       .findByIdAndDelete(id)
-      .orFail(new NotFoundException('Character not found'));
+      .orFail(new NotFoundException('Not found'));
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

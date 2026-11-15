@@ -32,7 +32,7 @@ export class BookService {
         _id: id,
         userId,
       })
-      .orFail(new NotFoundException('Book not found'));
+      .orFail(new NotFoundException('Not found'));
     return toBookDto(book);
   }
 
@@ -52,14 +52,14 @@ export class BookService {
           returnDocument: 'after',
           runValidators: true,
         })
-        .orFail(new NotFoundException('Book not found')),
+        .orFail(new NotFoundException('Not found')),
     );
   }
 
   async delete(id: MongoId, userId: MongoId): Promise<void> {
     await this.bookModel
       .findOneAndDelete({ _id: id, userId })
-      .orFail(new NotFoundException('Book not found'));
+      .orFail(new NotFoundException('Not found'));
     await this.eventEmitter.emitAsync(BOOK_DELETED, id);
   }
 }

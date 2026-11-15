@@ -42,7 +42,7 @@ export class ChapterService {
   ): Promise<ChapterDocument> {
     const chapter = await this.chapterModel
       .findById(id)
-      .orFail(new NotFoundException('Chapter Not Found'));
+      .orFail(new NotFoundException('Not Found'));
     await this.bookService.findById(chapter.bookId, userId);
     return chapter;
   }
@@ -59,7 +59,7 @@ export class ChapterService {
           returnDocument: 'after',
           runValidators: true,
         })
-        .orFail(new NotFoundException('Chapter not found')),
+        .orFail(new NotFoundException('Not found')),
     );
   }
 
@@ -67,7 +67,7 @@ export class ChapterService {
     await this.getChapterDocument(id, userId);
     await this.chapterModel
       .findByIdAndDelete(id)
-      .orFail(new NotFoundException('Chapter not found'));
+      .orFail(new NotFoundException('Not found'));
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

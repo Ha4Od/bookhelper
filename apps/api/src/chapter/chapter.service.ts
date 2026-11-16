@@ -59,7 +59,7 @@ export class ChapterService {
     await this.getChapterDocument(id, userId);
     const {title, order, text } = dto;
     let wordCount: number | undefined;
-    if (text || text === '') {
+    if (text !== undefined) {
       wordCount = countWords(text);
     }
     return toChapterDto(

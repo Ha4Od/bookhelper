@@ -22,6 +22,18 @@ export class ChapterService {
     private readonly bookService: BookService,
   ) {}
 
+  async getChapterSumByBookId(bookId: MongoId): Promise<void> {
+    await this.chapterModel.aggregate([
+      { $match: { bookId: bookId } },
+      {
+        $group: {
+          wordCount: { $sum: '$wordCount' },
+
+        },
+      },
+    ]);
+  }
+
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {
     const { title, bookId, text, order } = dto;
     await this.bookService.findById(dto.bookId, userId);

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ChapterService } from './chapter.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
-import { ChapterDto } from '@bookhelper/shared';
+import { ChapterDto, ChapterListItemDto } from '@bookhelper/shared';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -42,7 +42,7 @@ export class ChapterController {
   async findByBookId(
     @Query('bookId', ParseObjectIdPipe) id: MongoId,
     @CurrentUser() userId: string,
-  ): Promise<ChapterDto[]> {
+  ): Promise<ChapterListItemDto[]> {
     return this.chapterService.findByBookId(id, userId);
   }
 

@@ -8,7 +8,7 @@ import { UserDto } from '@bookhelper/shared';
 import { toUserDto } from './user.mapper';
 import type { MongoId } from '../common/mongo-id-type';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {NOT_FOUND} from "../common/not-found-error";
+import { NOT_FOUND } from '../common/not-found-error';
 
 @Injectable()
 export class UserService {

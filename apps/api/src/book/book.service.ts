@@ -9,7 +9,7 @@ import { UpdateBookTitleDto } from './dto/update-booktitle.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from './book.events';
 import type { MongoId } from '../common/mongo-id-type';
-import {NOT_FOUND} from "../common/not-found-error";
+import { NOT_FOUND } from '../common/not-found-error';
 
 @Injectable()
 export class BookService {

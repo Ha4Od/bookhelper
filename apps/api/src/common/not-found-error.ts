@@ -1,1 +1,1 @@
-export const NOT_FOUND = "Not found";
+export const NOT_FOUND = 'Not found';

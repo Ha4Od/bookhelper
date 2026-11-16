@@ -10,7 +10,7 @@ import { toCharacterDto } from './character.mapper';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { MongoId } from '../common/mongo-id-type';
 import { BookService } from '../book/book.service';
-import {NOT_FOUND} from "../common/not-found-error";
+import { NOT_FOUND } from '../common/not-found-error';
 
 @Injectable()
 export class CharacterService {

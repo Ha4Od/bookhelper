@@ -6,12 +6,13 @@ import { CreateChapterDto } from './dto/create-chapter.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from '../book/book.events';
 import { toChapterDto } from './chapter.mapper';
-import { ChapterDto } from '@bookhelper/shared';
+import { ChapterDto, ChapterListItemDto } from '@bookhelper/shared';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { BookService } from '../book/book.service';
 import type { MongoId } from '../common/mongo-id-type';
 import { countWords } from '../common/word-count';
-import {NOT_FOUND} from "../common/not-found-error";
+import { NOT_FOUND } from '../common/not-found-error';
+import { toChapterFrontDto } from './chapter.list-item.mapper';
 
 @Injectable()
 export class ChapterService {
@@ -35,12 +36,16 @@ export class ChapterService {
     );
   }
 
-  async findByBookId(bookId: MongoId, userId: MongoId): Promise<ChapterDto[]> {
+  async findByBookId(
+    bookId: MongoId,
+    userId: MongoId,
+  ): Promise<ChapterListItemDto[]> {
     await this.bookService.findById(bookId, userId);
     const chapters = await this.chapterModel
       .find({ bookId })
-      .sort({ order: 1 });
-    return chapters.map((chapter) => toChapterDto(chapter));
+      .sort({ order: 1 })
+      .select('title bookId order wordCount');
+    return chapters.map((chapter) => toChapterFrontDto(chapter));
   }
 
   async findById(id: MongoId, userId: MongoId): Promise<ChapterDto> {

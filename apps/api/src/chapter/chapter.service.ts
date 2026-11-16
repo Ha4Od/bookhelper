@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Chapter, ChapterDocument } from './chapter.schema';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -13,6 +13,7 @@ import type { MongoId } from '../common/mongo-id-type';
 import { countWords } from '../common/word-count';
 import { NOT_FOUND } from '../common/not-found-error';
 import { toChapterFrontDto } from './chapter.list-item.mapper';
+import { filteredResponse } from '../book/book-chapters-info.type';
 
 @Injectable()
 export class ChapterService {
@@ -22,16 +23,24 @@ export class ChapterService {
     private readonly bookService: BookService,
   ) {}
 
-  async getChapterSumByBookId(bookId: MongoId): Promise<void> {
-    await this.chapterModel.aggregate([
-      { $match: { bookId: bookId } },
+  async getChapterSumByBookId(bookId: MongoId): Promise<filteredResponse> {
+    const chapterObj = await this.chapterModel.aggregate<filteredResponse>([
+      { $match: { bookId: new mongoose.Types.ObjectId(bookId) } },
       {
         $group: {
+          _id: null,
           wordCount: { $sum: '$wordCount' },
-
+          chapterCount: { $sum: 1 },
         },
       },
+      { $project: { _id: 0 } },
     ]);
+    const response = {
+      wordCount: 0,
+      chapterCount: 0,
+    };
+    console.log(chapterObj);
+    return chapterObj[0] ?? response;
   }
 
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {

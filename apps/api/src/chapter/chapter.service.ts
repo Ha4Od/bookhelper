@@ -10,6 +10,7 @@ import { ChapterDto } from '@bookhelper/shared';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { BookService } from '../book/book.service';
 import type { MongoId } from '../common/mongo-id-type';
+import {countWords} from "../common/word-count";
 
 @Injectable()
 export class ChapterService {
@@ -20,8 +21,11 @@ export class ChapterService {
   ) {}
 
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {
+    const {title, bookId, text, order} = dto;
     await this.bookService.findById(dto.bookId, userId);
-    return toChapterDto(await this.chapterModel.create(dto));
+    return toChapterDto(await this.chapterModel.create({
+      title, bookId, text, order, wordCount: countWords(text ?? "")
+    }));
   }
 
   async findByBookId(bookId: MongoId, userId: MongoId): Promise<ChapterDto[]> {
@@ -53,9 +57,16 @@ export class ChapterService {
     userId: MongoId,
   ): Promise<ChapterDto> {
     await this.getChapterDocument(id, userId);
+    const {title, order, text } = dto;
+    let wordCount: number | undefined;
+    if (text || text === '') {
+      wordCount = countWords(text);
+    }
     return toChapterDto(
       await this.chapterModel
-        .findByIdAndUpdate(id, dto, {
+        .findByIdAndUpdate(id, {
+          title, order, text , wordCount: wordCount,
+        }, {
           returnDocument: 'after',
           runValidators: true,
         })

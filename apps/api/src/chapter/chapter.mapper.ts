@@ -8,6 +8,7 @@ export function toChapterDto(chapter: ChapterDocument): ChapterDto {
     title: chapter.title,
     text: chapter.text,
     order: chapter.order,
+    wordCount: chapter.wordCount,
     createdAt: chapter.createdAt.toISOString(),
     updatedAt: chapter.updatedAt.toISOString(),
   };

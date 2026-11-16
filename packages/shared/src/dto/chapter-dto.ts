@@ -4,6 +4,7 @@ export interface ChapterDto {
     text: string;
     title: string;
     order: number;
+    wordCount: number;
     createdAt: string;
     updatedAt: string;
 }

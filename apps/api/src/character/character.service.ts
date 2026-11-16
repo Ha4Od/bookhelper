@@ -10,6 +10,7 @@ import { toCharacterDto } from './character.mapper';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { MongoId } from '../common/mongo-id-type';
 import { BookService } from '../book/book.service';
+import {NOT_FOUND} from "../common/not-found-error";
 
 @Injectable()
 export class CharacterService {
@@ -25,7 +26,7 @@ export class CharacterService {
   ): Promise<CharacterDocument> {
     const character = await this.characterModel
       .findById(id)
-      .orFail(new NotFoundException('Not Found'));
+      .orFail(new NotFoundException(NOT_FOUND));
     await this.bookService.findById(character.bookId, userId);
     return character;
   }
@@ -65,7 +66,7 @@ export class CharacterService {
           returnDocument: 'after',
           runValidators: true,
         })
-        .orFail(new NotFoundException('Not found')),
+        .orFail(new NotFoundException(NOT_FOUND)),
     );
   }
 
@@ -73,7 +74,7 @@ export class CharacterService {
     await this.getCharacterDocument(id, userId);
     await this.characterModel
       .findByIdAndDelete(id)
-      .orFail(new NotFoundException('Not found'));
+      .orFail(new NotFoundException(NOT_FOUND));
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

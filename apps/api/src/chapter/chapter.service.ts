@@ -10,7 +10,8 @@ import { ChapterDto } from '@bookhelper/shared';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { BookService } from '../book/book.service';
 import type { MongoId } from '../common/mongo-id-type';
-import {countWords} from "../common/word-count";
+import { countWords } from '../common/word-count';
+import {NOT_FOUND} from "../common/not-found-error";
 
 @Injectable()
 export class ChapterService {
@@ -21,11 +22,17 @@ export class ChapterService {
   ) {}
 
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {
-    const {title, bookId, text, order} = dto;
+    const { title, bookId, text, order } = dto;
     await this.bookService.findById(dto.bookId, userId);
-    return toChapterDto(await this.chapterModel.create({
-      title, bookId, text, order, wordCount: countWords(text ?? "")
-    }));
+    return toChapterDto(
+      await this.chapterModel.create({
+        title,
+        bookId,
+        text,
+        order,
+        wordCount: countWords(text ?? ''),
+      }),
+    );
   }
 
   async findByBookId(bookId: MongoId, userId: MongoId): Promise<ChapterDto[]> {
@@ -46,7 +53,7 @@ export class ChapterService {
   ): Promise<ChapterDocument> {
     const chapter = await this.chapterModel
       .findById(id)
-      .orFail(new NotFoundException('Not Found'));
+      .orFail(new NotFoundException(NOT_FOUND));
     await this.bookService.findById(chapter.bookId, userId);
     return chapter;
   }
@@ -57,20 +64,27 @@ export class ChapterService {
     userId: MongoId,
   ): Promise<ChapterDto> {
     await this.getChapterDocument(id, userId);
-    const {title, order, text } = dto;
+    const { title, order, text } = dto;
     let wordCount: number | undefined;
     if (text !== undefined) {
       wordCount = countWords(text);
     }
     return toChapterDto(
       await this.chapterModel
-        .findByIdAndUpdate(id, {
-          title, order, text , wordCount: wordCount,
-        }, {
-          returnDocument: 'after',
-          runValidators: true,
-        })
-        .orFail(new NotFoundException('Not found')),
+        .findByIdAndUpdate(
+          id,
+          {
+            title,
+            order,
+            text,
+            wordCount: wordCount,
+          },
+          {
+            returnDocument: 'after',
+            runValidators: true,
+          },
+        )
+        .orFail(new NotFoundException(NOT_FOUND)),
     );
   }
 
@@ -78,7 +92,7 @@ export class ChapterService {
     await this.getChapterDocument(id, userId);
     await this.chapterModel
       .findByIdAndDelete(id)
-      .orFail(new NotFoundException('Not found'));
+      .orFail(new NotFoundException(NOT_FOUND));
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

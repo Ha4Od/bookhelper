@@ -9,6 +9,7 @@ import { UpdateBookTitleDto } from './dto/update-booktitle.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from './book.events';
 import type { MongoId } from '../common/mongo-id-type';
+import {NOT_FOUND} from "../common/not-found-error";
 
 @Injectable()
 export class BookService {
@@ -32,7 +33,7 @@ export class BookService {
         _id: id,
         userId,
       })
-      .orFail(new NotFoundException('Not found'));
+      .orFail(new NotFoundException(NOT_FOUND));
     return toBookDto(book);
   }
 
@@ -52,14 +53,14 @@ export class BookService {
           returnDocument: 'after',
           runValidators: true,
         })
-        .orFail(new NotFoundException('Not found')),
+        .orFail(new NotFoundException(NOT_FOUND)),
     );
   }
 
   async delete(id: MongoId, userId: MongoId): Promise<void> {
     await this.bookModel
       .findOneAndDelete({ _id: id, userId })
-      .orFail(new NotFoundException('Not found'));
+      .orFail(new NotFoundException(NOT_FOUND));
     await this.eventEmitter.emitAsync(BOOK_DELETED, id);
   }
 }

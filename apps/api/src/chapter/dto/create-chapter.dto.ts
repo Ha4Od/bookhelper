@@ -19,7 +19,7 @@ export class CreateChapterDto {
 
   @IsOptional()
   @IsString()
-  text ?: string;
+  text?: string;
 
   @IsNotEmpty()
   @IsInt()

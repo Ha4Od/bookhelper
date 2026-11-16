@@ -7,7 +7,8 @@ import argon2 from 'argon2';
 import { UserDto } from '@bookhelper/shared';
 import { toUserDto } from './user.mapper';
 import type { MongoId } from '../common/mongo-id-type';
-import {UpdateUserDto} from "./dto/update-user.dto";
+import { UpdateUserDto } from './dto/update-user.dto';
+import {NOT_FOUND} from "../common/not-found-error";
 
 @Injectable()
 export class UserService {
@@ -29,14 +30,18 @@ export class UserService {
     return toUserDto(
       await this.userModel
         .findById(id)
-        .orFail(new NotFoundException('Not Found')),
+        .orFail(new NotFoundException(NOT_FOUND)),
     );
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserDto> {
-    return toUserDto(await this.userModel.findByIdAndUpdate(id, dto, {
-      returnDocument: 'after',
-      runValidators: true,
-    }).orFail(new NotFoundException('Not Found')));
+    return toUserDto(
+      await this.userModel
+        .findByIdAndUpdate(id, dto, {
+          returnDocument: 'after',
+          runValidators: true,
+        })
+        .orFail(new NotFoundException(NOT_FOUND)),
+    );
   }
 }

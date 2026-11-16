@@ -17,7 +17,7 @@ export class Chapter {
   @Prop({ required: true, type: Number })
   order: number;
 
-  @Prop({default: 0})
+  @Prop({ default: 0 })
   wordCount: number;
 
   createdAt: Date;

@@ -13,7 +13,7 @@ import type { MongoId } from '../common/mongo-id-type';
 import { countWords } from '../common/word-count';
 import { NOT_FOUND } from '../common/not-found-error';
 import { toChapterFrontDto } from './chapter.list-item.mapper';
-import { FilteredResponse } from '../book/book-chapters-info.type';
+import { BookChaptersInfoType } from '../book/book-chapters-info.type';
 
 @Injectable()
 export class ChapterService {
@@ -23,8 +23,8 @@ export class ChapterService {
     private readonly bookService: BookService,
   ) {}
 
-  async getChapterSumByBookId(bookId: MongoId): Promise<FilteredResponse> {
-    const chapters = await this.chapterModel.aggregate<FilteredResponse>([
+  async getChapterSumByBookId(bookId: MongoId): Promise<BookChaptersInfoType> {
+    const chapters = await this.chapterModel.aggregate<BookChaptersInfoType>([
       { $match: { bookId: new mongoose.Types.ObjectId(bookId) } },
       {
         $group: {
@@ -39,14 +39,20 @@ export class ChapterService {
       wordCount: 0,
       chapterCount: 0,
     };
-
     return chapters[0] ?? response;
+  }
+
+  private async updateCounts(bookId: MongoId): Promise<void> {
+    return await this.bookService.updateCounts(
+      bookId,
+      await this.getChapterSumByBookId(bookId),
+    );
   }
 
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {
     const { title, bookId, text, order } = dto;
     await this.bookService.findById(dto.bookId, userId);
-    return toChapterDto(
+    const chapter = toChapterDto(
       await this.chapterModel.create({
         title,
         bookId,
@@ -55,6 +61,8 @@ export class ChapterService {
         wordCount: countWords(text ?? ''),
       }),
     );
+    await this.updateCounts(bookId);
+    return chapter;
   }
 
   async findByBookId(
@@ -89,13 +97,13 @@ export class ChapterService {
     dto: UpdateChapterDto,
     userId: MongoId,
   ): Promise<ChapterDto> {
-    await this.getChapterDocument(id, userId);
+    const chapter = await this.getChapterDocument(id, userId);
     const { title, order, text } = dto;
     let wordCount: number | undefined;
     if (text !== undefined) {
       wordCount = countWords(text);
     }
-    return toChapterDto(
+    const updatedChapter = toChapterDto(
       await this.chapterModel
         .findByIdAndUpdate(
           id,
@@ -112,13 +120,16 @@ export class ChapterService {
         )
         .orFail(new NotFoundException(NOT_FOUND)),
     );
+    await this.updateCounts(chapter.bookId);
+    return updatedChapter;
   }
 
   async delete(id: MongoId, userId: MongoId): Promise<void> {
-    await this.getChapterDocument(id, userId);
+    const chapter = await this.getChapterDocument(id, userId);
     await this.chapterModel
       .findByIdAndDelete(id)
       .orFail(new NotFoundException(NOT_FOUND));
+    await this.updateCounts(chapter.bookId);
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

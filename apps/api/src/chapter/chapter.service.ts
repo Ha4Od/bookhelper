@@ -13,7 +13,7 @@ import type { MongoId } from '../common/mongo-id-type';
 import { countWords } from '../common/word-count';
 import { NOT_FOUND } from '../common/not-found-error';
 import { toChapterFrontDto } from './chapter.list-item.mapper';
-import { BookChaptersInfoType } from '../book/book-chapters-info.type';
+import { BookChaptersInfo } from '../book/book-chapters-info.type';
 
 @Injectable()
 export class ChapterService {
@@ -23,8 +23,10 @@ export class ChapterService {
     private readonly bookService: BookService,
   ) {}
 
-  async getChapterSumByBookId(bookId: MongoId): Promise<BookChaptersInfoType> {
-    const chapters = await this.chapterModel.aggregate<BookChaptersInfoType>([
+  private async getChapterSumByBookId(
+    bookId: MongoId,
+  ): Promise<BookChaptersInfo> {
+    const chapters = await this.chapterModel.aggregate<BookChaptersInfo>([
       { $match: { bookId: new mongoose.Types.ObjectId(bookId) } },
       {
         $group: {
@@ -42,8 +44,8 @@ export class ChapterService {
     return chapters[0] ?? response;
   }
 
-  private async updateCounts(bookId: MongoId): Promise<void> {
-    return await this.bookService.updateCounts(
+  private async updateBookCounts(bookId: MongoId): Promise<void> {
+    await this.bookService.updateCounts(
       bookId,
       await this.getChapterSumByBookId(bookId),
     );
@@ -61,7 +63,7 @@ export class ChapterService {
         wordCount: countWords(text ?? ''),
       }),
     );
-    await this.updateCounts(bookId);
+    await this.updateBookCounts(bookId);
     return chapter;
   }
 
@@ -120,7 +122,7 @@ export class ChapterService {
         )
         .orFail(new NotFoundException(NOT_FOUND)),
     );
-    await this.updateCounts(chapter.bookId);
+    await this.updateBookCounts(chapter.bookId);
     return updatedChapter;
   }
 
@@ -129,7 +131,7 @@ export class ChapterService {
     await this.chapterModel
       .findByIdAndDelete(id)
       .orFail(new NotFoundException(NOT_FOUND));
-    await this.updateCounts(chapter.bookId);
+    await this.updateBookCounts(chapter.bookId);
   }
 
   @OnEvent(BOOK_DELETED, { suppressErrors: false })

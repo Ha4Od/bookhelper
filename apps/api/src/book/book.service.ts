@@ -10,7 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BOOK_DELETED } from './book.events';
 import type { MongoId } from '../common/mongo-id-type';
 import { NOT_FOUND } from '../common/not-found-error';
-import { BookChaptersInfoType } from './book-chapters-info.type';
+import { BookChaptersInfo } from './book-chapters-info.type';
 
 @Injectable()
 export class BookService {
@@ -65,10 +65,7 @@ export class BookService {
     await this.eventEmitter.emitAsync(BOOK_DELETED, id);
   }
 
-  async updateCounts(
-    id: MongoId,
-    infoType: BookChaptersInfoType,
-  ): Promise<void> {
+  async updateCounts(id: MongoId, infoType: BookChaptersInfo): Promise<void> {
     await this.bookModel
       .findByIdAndUpdate(id, infoType)
       .orFail(new NotFoundException(NOT_FOUND));

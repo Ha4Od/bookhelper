@@ -1,4 +1,4 @@
-export type BookChaptersInfoType = {
+export type BookChaptersInfo = {
   wordCount: number;
   chapterCount: number;
 };

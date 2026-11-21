@@ -63,4 +63,16 @@ export class BookService {
       .orFail(new NotFoundException(NOT_FOUND));
     await this.eventEmitter.emitAsync(BOOK_DELETED, id);
   }
+
+  async updateCounts(
+    id: MongoId,
+    wordCount: number,
+    chapterCount: number,
+  ): Promise<BookDto> {
+    return toBookDto(
+      await this.bookModel
+        .findByIdAndUpdate({ _id: id }, { wordCount, chapterCount })
+        .orFail(new NotFoundException(NOT_FOUND)),
+    );
+  }
 }

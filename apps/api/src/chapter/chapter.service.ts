@@ -13,7 +13,7 @@ import type { MongoId } from '../common/mongo-id-type';
 import { countWords } from '../common/word-count';
 import { NOT_FOUND } from '../common/not-found-error';
 import { toChapterFrontDto } from './chapter.list-item.mapper';
-import { filteredResponse } from '../book/book-chapters-info.type';
+import { FilteredResponse } from '../book/book-chapters-info.type';
 
 @Injectable()
 export class ChapterService {
@@ -23,8 +23,8 @@ export class ChapterService {
     private readonly bookService: BookService,
   ) {}
 
-  async getChapterSumByBookId(bookId: MongoId): Promise<filteredResponse> {
-    const chapterObj = await this.chapterModel.aggregate<filteredResponse>([
+  async getChapterSumByBookId(bookId: MongoId): Promise<FilteredResponse> {
+    const chapters = await this.chapterModel.aggregate<FilteredResponse>([
       { $match: { bookId: new mongoose.Types.ObjectId(bookId) } },
       {
         $group: {
@@ -39,8 +39,8 @@ export class ChapterService {
       wordCount: 0,
       chapterCount: 0,
     };
-    console.log(chapterObj);
-    return chapterObj[0] ?? response;
+
+    return chapters[0] ?? response;
   }
 
   async create(dto: CreateChapterDto, userId: MongoId): Promise<ChapterDto> {

@@ -15,6 +15,12 @@ export class Book {
   @Prop({ required: true, minlength: 3 })
   title: string;
 
+  @Prop({ default: 0 })
+  wordCount: number;
+
+  @Prop({ default: 0 })
+  chapterCount: number;
+
   createdAt: Date;
 
   updatedAt: Date;
